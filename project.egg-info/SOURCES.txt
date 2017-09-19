@@ -1,0 +1,13 @@
+setup.py
+product_extract/__init__.py
+product_extract/items.py
+product_extract/middlewares.py
+product_extract/pipelines.py
+product_extract/settings.py
+product_extract/spiders/__init__.py
+product_extract/spiders/main.py
+project.egg-info/PKG-INFO
+project.egg-info/SOURCES.txt
+project.egg-info/dependency_links.txt
+project.egg-info/entry_points.txt
+project.egg-info/top_level.txt
