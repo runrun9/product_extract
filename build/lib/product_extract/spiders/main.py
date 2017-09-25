@@ -36,9 +36,9 @@ class MainSpider(scrapy.Spider):
     # print("製品説明のxpath")
     # product_summary_xpath = input(">> ")
 
-    top_url = "http://www.lion.co.jp/ja/products/"
-    product_xpath = "/html/body/div[1]/article/div[2]/div[1]/section/h1"
-    product_summary_xpath = "/html/body/div[1]/article/div[2]/div[1]/section/div[1]/div/p"
+    top_url = "http://www.kao.com/jp/products/"
+    product_xpath = "/html/body/div[1]/div[4]/article/header/h1"
+    product_summary_xpath = "/html/body/div[1]/div[4]/article/div[1]/p[1]"
 
     product_xpath += "/text()"
     product_summary_xpath += "/text()"

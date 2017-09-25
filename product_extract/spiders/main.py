@@ -36,9 +36,9 @@ class MainSpider(scrapy.Spider):
     # print("製品説明のxpath")
     # product_summary_xpath = input(">> ")
 
-    top_url = "http://www.lion.co.jp/ja/products/"
-    product_xpath = "/html/body/div[1]/article/div[2]/div[1]/section/h1"
-    product_summary_xpath = "/html/body/div[1]/article/div[2]/div[1]/section/div[1]/div/p"
+    top_url = "http://www.kao.com/jp/products/"
+    product_xpath = "/html/body/div[1]/div[4]/article/header/h1"
+    product_summary_xpath = "/html/body/div[1]/div[4]/article/div[1]/p[1]"
 
     product_xpath += "/text()"
     product_summary_xpath += "/text()"
@@ -59,9 +59,9 @@ class MainSpider(scrapy.Spider):
         if Selector(response).xpath(self.input_data.product_xpath):
             item = OutItem()
             item["URL"] = response.url
-            item["product_name"] = Selector(response).xpath(self.input_data.product_xpath).extract()[0]
+            item["product_name"] = "¥n".join(Selector(response).xpath(self.input_data.product_xpath).extract())
             try:
-                item["product_summary"] = Selector(response).xpath(self.input_data.product_summary_xpath).extract()[0]
+                item["product_summary"] = "¥n".join(Selector(response).xpath(self.input_data.product_summary_xpath).extract())
             except:
                 print("no summary")
 
@@ -71,6 +71,6 @@ class MainSpider(scrapy.Spider):
             next_page = Selector(response).xpath("//a/@href").extract()
             if next_page is not None:
                 for url in next_page:
-                    if not url_check(MainSpider.skip_list, url): # 末尾がpdfであるurlをはじく
+                    if not url_check(MainSpider.skip_list, url): # 特殊な末尾のurlをはじく
                         url = response.urljoin(url)
                         yield scrapy.Request(url, callback=self.parse)
