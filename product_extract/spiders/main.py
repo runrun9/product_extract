@@ -57,13 +57,20 @@ class MainSpider(scrapy.Spider):
 
     def parse(self, response):
         if Selector(response).xpath(self.input_data.product_xpath):
+            back_urls = []
             item = OutItem()
             item["URL"] = response.url
-            item["product_name"] = "¥n".join(Selector(response).xpath(self.input_data.product_xpath).extract())
+            item["product_name"] = "".join(Selector(response).xpath(self.input_data.product_xpath).extract())
             try:
-                item["product_summary"] = "¥n".join(Selector(response).xpath(self.input_data.product_summary_xpath).extract())
+                item["product_summary"] = "".join(Selector(response).xpath(self.input_data.product_summary_xpath).extract())
+                item["depth"] = response.meta["depth"]
             except:
-                print("no summary")
+                print("no summary or depth")
+            try:
+                back_urls.append(response.meta["back_urls"])
+                item["back_urls"] = back_urls
+            except:
+                print("no back_urls")
 
             yield item
 
@@ -73,4 +80,7 @@ class MainSpider(scrapy.Spider):
                 for url in next_page:
                     if not url_check(MainSpider.skip_list, url): # 特殊な末尾のurlをはじく
                         url = response.urljoin(url)
-                        yield scrapy.Request(url, callback=self.parse)
+                        if response.meta["depth"]:
+                            yield scrapy.Request(url, meta = {"depth": response.meta["depth"] + 1, "back_urls": response.url}, callback=self.parse)
+                        else:
+                            yield scrapy.Request(url, meta = {"depth": 0, "back_urls": response.url}, callback=self.parse)
