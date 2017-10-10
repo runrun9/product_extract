@@ -78,13 +78,12 @@ class MainSpider(scrapy.Spider):
 
             yield item
 
-        else:
-            next_page = Selector(response).xpath("//a/@href").extract()
-            if next_page is not None:
-                for url in next_page:
-                    if not url_check(MainSpider.skip_list, url): # 特殊な末尾のurlをはじく
-                        url = response.urljoin(url)
-                        if response.meta["depth"]:
-                            yield scrapy.Request(url, meta = {"depth": response.meta["depth"] + 1, "back_urls": back_urls}, callback=self.parse)
-                        else:
-                            yield scrapy.Request(url, meta = {"depth": 0, "back_urls": back_urls}, callback=self.parse)
+        next_page = Selector(response).xpath("//a/@href").extract()
+        if next_page is not None:
+            for url in next_page:
+                if not url_check(MainSpider.skip_list, url): # 特殊な末尾のurlをはじく
+                    url = response.urljoin(url)
+                    if response.meta["depth"]:
+                        yield scrapy.Request(url, meta = {"depth": response.meta["depth"] + 1, "back_urls": back_urls}, callback=self.parse)
+                    else:
+                        yield scrapy.Request(url, meta = {"depth": 0, "back_urls": back_urls}, callback=self.parse)

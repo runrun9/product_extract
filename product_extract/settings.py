@@ -16,6 +16,9 @@ NEWSPIDER_MODULE = 'product_extract.spiders'
 
 DEPTH_LIMIT = 3
 
+# 幅優先探索
+DEPTH_PRIORITY = 1
+
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'product_extract (+http://www.yourdomain.com)'
 
