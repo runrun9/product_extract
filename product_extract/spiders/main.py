@@ -13,6 +13,7 @@ class Input_data:
         self.product_xpath = product_xpath
         self.product_summary_xpath = product_summary_xpath
 
+
 # urlの末尾がskip_listに含まれるものである場合Falseを返す
 def url_check(skip_list, url):
     for x in skip_list:
@@ -20,6 +21,7 @@ def url_check(skip_list, url):
         if re.match(x, url):
             return True
     return False
+
 
 # spider
 class MainSpider(scrapy.Spider):
@@ -54,7 +56,6 @@ class MainSpider(scrapy.Spider):
     except:
         print("url errs")
 
-
     def parse(self, response):
         back_urls = []
         try:
@@ -81,9 +82,9 @@ class MainSpider(scrapy.Spider):
         next_page = Selector(response).xpath("//a/@href").extract()
         if next_page is not None:
             for url in next_page:
-                if not url_check(MainSpider.skip_list, url): # 特殊な末尾のurlをはじく
+                if not url_check(MainSpider.skip_list, url):    # 特殊な末尾のurlをはじく
                     url = response.urljoin(url)
                     if response.meta["depth"]:
-                        yield scrapy.Request(url, meta = {"depth": response.meta["depth"] + 1, "back_urls": back_urls}, callback=self.parse)
+                        yield scrapy.Request(url, meta={"depth": response.meta["depth"] + 1, "back_urls": back_urls}, callback=self.parse)
                     else:
-                        yield scrapy.Request(url, meta = {"depth": 0, "back_urls": back_urls}, callback=self.parse)
+                        yield scrapy.Request(url, meta={"depth": 0, "back_urls": back_urls}, callback=self.parse)
